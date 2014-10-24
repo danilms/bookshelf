@@ -5,6 +5,8 @@
 
 namespace Bookshelf\Controller;
 
+use Bookshelf\Core\Db;
+use Bookshelf\Core\Request;
 use Bookshelf\Core\Templater;
 use Bookshelf\Model\Book;
 
@@ -25,32 +27,37 @@ class BooksController
     private $templater;
 
     /**
+     * @var array Request
+     */
+    private $request;
+
+    /**
      * Magic function that create templater class instance
      */
     public function __construct()
     {
         $this->templater = new Templater();
+        $this->request = new Request($_GET, $_POST);
     }
 
     public function defaultAction()
     {
-
         $orderBy = [
             'category_id' => 'ASC',
             'author' => 'ASC',
             'name' => 'ASC'
         ];
 
-        if (!$_POST['search']) {
-            $books = Book::search($orderBy);
-        } else {
-            $searchParameters = [
-                'b.name' => $_POST['search'],
-                'author' => $_POST['search'],
-                'c.name' => $_POST['search']
-            ];
-            $books = Book::search($orderBy, $searchParameters);
+        $search = null;
+        if ($this->request->isPost()) {
+            $search = $this->request->get('search');
         }
+        $searchParameters = [
+            'b.name' => $search,
+            'author' => $search,
+            'c.name' => $search
+            ];
+        $books = Book::search($orderBy, $searchParameters);
 
         $result = [];
         foreach ($books as $book) {
@@ -63,5 +70,4 @@ class BooksController
 
         return $this->templater->show($this->controllerName, 'Default', $result);
     }
-
 }
