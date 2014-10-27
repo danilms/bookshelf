@@ -57,11 +57,7 @@ class Request
      */
     public function isGet()
     {
-        if (strtoupper($_SERVER['REQUEST_METHOD']) === self::GET_METHOD) {
-            return true;
-        } else {
-            return false;
-        }
+        return (strtoupper($_SERVER['REQUEST_METHOD']) === self::GET_METHOD);
     }
 
     /**
@@ -69,11 +65,7 @@ class Request
      */
     public function isPost()
     {
-        if (strtoupper($_SERVER['REQUEST_METHOD']) === self::POST_METHOD) {
-            return true;
-        } else {
-            return false;
-        }
+        return (strtoupper($_SERVER['REQUEST_METHOD']) === self::POST_METHOD);
     }
 
 

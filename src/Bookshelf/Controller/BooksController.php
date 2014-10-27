@@ -5,7 +5,6 @@
 
 namespace Bookshelf\Controller;
 
-use Bookshelf\Core\Db;
 use Bookshelf\Core\Request;
 use Bookshelf\Core\Templater;
 use Bookshelf\Model\Book;
@@ -15,7 +14,6 @@ use Bookshelf\Model\Book;
  */
 class BooksController
 {
-
     /**
      * @var string default name for controller
      */
@@ -48,15 +46,15 @@ class BooksController
             'name' => 'ASC'
         ];
 
-        $search = null;
+        $searchParameters = [];
         if ($this->request->isPost()) {
             $search = $this->request->get('search');
-        }
-        $searchParameters = [
-            'b.name' => $search,
-            'author' => $search,
-            'c.name' => $search
+            $searchParameters = [
+                'b.name' => $search,
+                'author' => $search,
+                'c.name' => $search
             ];
+        }
         $books = Book::search($orderBy, $searchParameters);
 
         $result = [];
