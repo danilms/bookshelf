@@ -5,6 +5,7 @@
 
 namespace Bookshelf\Core;
 
+use Bookshelf\Core\Logger\Logger;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -70,6 +71,7 @@ class Db
         $this->dbName = $dbName;
         $this->dbUser = $dbUser;
         $this->dbPassword = $dbPassword;
+        $this->logger = new Logger('../logs/');
     }
 
     /**
@@ -86,6 +88,7 @@ class Db
             $result = $this->statement->execute($options);
 
             if ($result === false) {
+                $this->logger->error('Database query error');
                 throw DbException::executionFailed();
             }
         } catch (PDOException $e) {
@@ -295,7 +298,7 @@ class Db
     /**
      * @return PDO
      */
-    private function getConnection()
+    public function getConnection()
     {
         if (!$this->connection) {
             $this->connection = new PDO("pgsql:host=localhost; dbname=$this->dbName", $this->dbUser, $this->dbPassword);

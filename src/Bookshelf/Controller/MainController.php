@@ -37,7 +37,7 @@ class MainController
      */
     public function __construct()
     {
-        $this->logger= new Logger('../logs/');
+        $this->logger= new Logger('./logs/');
         $this->session = new Session();
         try {
             $this->templater = new Templater();

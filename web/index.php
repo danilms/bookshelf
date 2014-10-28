@@ -11,9 +11,9 @@ $session ->init();
 
 //put your credentials here
 //probably it MUST be stored in other place
-$dbName = '';
-$dbUserName = '';
-$dbUserPassword = '';
+$dbName = 'bookshelf';
+$dbUserName = 'postgres';
+$dbUserPassword = 'postgres';
 Db::getInstance($dbName, $dbUserName, $dbUserPassword);
 
 

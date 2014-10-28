@@ -5,6 +5,7 @@
 
 namespace Bookshelf\Core\Exception;
 
+use Bookshelf\Core\Logger\Logger;
 use Exception;
 use RuntimeException;
 
