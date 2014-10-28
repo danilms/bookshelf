@@ -9,7 +9,7 @@ use PDO;
 use ReflectionObject;
 use Bookshelf\Core\Db;
 
-class Book implements ModelInterface
+class Book extends ActiveRecord
 {
     /**
      * @var integer
@@ -136,6 +136,17 @@ class Book implements ModelInterface
     }
 
     /**
+     * @param mixed $id
+     * @return Book
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getLink()
@@ -195,34 +206,9 @@ class Book implements ModelInterface
     /**
      * @return string
      */
-    public static function getTableName()
+    public function getTableName()
     {
         return 'books';
-    }
-
-    /**
-     * @param  string $values
-     * @return Book
-     */
-    private static function factory($values)
-    {
-        $book = new self();
-        $reflection = new ReflectionObject($book);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($book, $values['id']);
-        $property->setAccessible(false);
-
-        $book->setName($values['name']);
-        $book->setDescription($values['description']);
-        $book->setRating($values['rating']);
-        $book->setLink($values['link']);
-        $book->setAuthor($values['author']);
-
-        $category = Category::getOneById($values['category_id']);
-        $book->setCategory($category);
-
-        return $book;
     }
 
     /**
@@ -230,10 +216,10 @@ class Book implements ModelInterface
      * @param array $searchParameters
      * @return Book[]
      */
-    public static function search(array $orderBy = [], array $searchParameters = [])
+    public function search(array $orderBy = [], array $searchParameters = [])
     {
         $db = Db::getInstance();
-        $tableBooks = self::getTableName();
+        $tableBooks = $this->getTableName();
         $tableCategories = Category::getTableName();
 
         //parse search
@@ -280,9 +266,43 @@ class Book implements ModelInterface
 
         $books = array();
         foreach ($resultArray as $result) {
-            $books[] = self::factory($result);
+            $book = New Book();
+            $book->setState($result);
+            $books[] = $book;
         }
 
         return $books;
     }
+
+    /**
+     * Return all property for user
+     *
+     * @return array
+     */
+    protected function getState()
+    {
+        return ['id' => $this->id, 'name' => $this->name, 'category_id' => $this->category, 'description' => $this->description,
+            'rating' => $this->rating, 'link' => $this->link, 'author' => $this->author];
+    }
+
+    /**
+     * Set value in user instance class from array
+     * @param $array
+     * @return mixed
+     */
+
+    protected function setState($array)
+    {
+        $this->name = $array['name'];
+        $this->description = $array['description'];
+        $this->rating = $array['rating'];
+        $this->link = $array['link'];
+        $this->author = $array['author'];
+        $this->id = $array['id'];
+
+        $category = New Category();
+        $this->category = $category->find($array['category_id']);
+    }
+
 }
+

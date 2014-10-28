@@ -11,7 +11,7 @@ use ReflectionObject;
 /**
  * @author Danil Vasiliev <danil.vasiliev@opensoftdev.ru>
  */
-class Category implements ModelInterface
+class Category extends ActiveRecord
 {
     /**
      * @var integer
@@ -53,38 +53,31 @@ class Category implements ModelInterface
     /**
      * @return string
      */
-    public static function getTableName()
+    public function getTableName()
     {
         return 'categories';
     }
 
     /**
-     * @param $values
-     * @return Category
+     * Return all property for user
+     *
+     * @return array
      */
-    private static function factory($values)
+    protected function getState()
     {
-        $category = new self();
-        $reflection = new ReflectionObject($category);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($category, $values['id']);
-        $property->setAccessible(false);
-
-        $category->setName($values['name']);
-
-        return $category;
+        return ['id' => $this->id, 'name' => $this->name];
     }
 
-    public static function getOneById($id)
-    {
-        $db = Db::getInstance();
-        $tableCategories = self::getTableName();
-        $options = ['id' => $id];
-        $result = $db->fetchOneBy($tableCategories, $options);
-        $category = self::factory($result);
+    /**
+     * Set value in user instance class from array
+     * @param $array
+     * @return mixed
+     */
 
-        return $category;
+    protected function setState($array)
+    {
+        $this->name = $array['name'];
+        $this->id = $array['id'];
     }
 
 }
