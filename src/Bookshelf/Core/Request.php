@@ -57,7 +57,7 @@ class Request
      */
     public function isGet()
     {
-        return (strtoupper($_SERVER['REQUEST_METHOD']) === self::GET_METHOD);
+        return ($this->getMethod() === self::GET_METHOD);
     }
 
     /**
@@ -65,7 +65,7 @@ class Request
      */
     public function isPost()
     {
-        return (strtoupper($_SERVER['REQUEST_METHOD']) === self::POST_METHOD);
+        return ($this->getMethod() === self::POST_METHOD);
     }
 
 
@@ -85,7 +85,7 @@ class Request
      * @param string $key
      * @return bool
      */
-    public function hasKey($key)
+    public function has($key)
     {
         if (array_key_exists($key, $this->data)){
             return true;

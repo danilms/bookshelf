@@ -92,7 +92,6 @@ class Db
                 throw DbException::executionFailed();
             }
         } catch (PDOException $e) {
-            //logging logic could be placed here
             throw DbException::executionFailed();
         }
 
