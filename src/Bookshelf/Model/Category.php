@@ -60,7 +60,8 @@ class Category extends ActiveRecord
 
     protected function getState()
     {
-        return ['id' => $this->id, 'name' => $this->name];
+        return ['id' => $this->id,
+            'name' => $this->name];
     }
 
     /**

@@ -288,8 +288,13 @@ class Book extends ActiveRecord
      */
     protected function getState()
     {
-        return ['id' => $this->id, 'category_id' => $this->category_id, 'name' => $this->name, 'description' => $this->description,
-            'rating' => $this->rating, 'link' => $this->link, 'author' => $this->author];
+        return ['id' => $this->id,
+            'category_id' => $this->category_id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'rating' => $this->rating,
+            'link' => $this->link,
+            'author' => $this->author];
     }
 
     /**
@@ -307,10 +312,8 @@ class Book extends ActiveRecord
         $this->author = $array['author'];
         $this->id = $array['id'];
 
-        $category = New Category();
+        $category = new Category();
         $this->category = $category->find($array['category_id']);
     }
 
 }
-
-

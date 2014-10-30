@@ -55,7 +55,7 @@ class BooksController
                 'c.name' => $search
             ];
         }
-        $bookObject = New Book();
+        $bookObject = new Book();
         $books = $bookObject->search($orderBy, $searchParameters);
 
         $result = [];
