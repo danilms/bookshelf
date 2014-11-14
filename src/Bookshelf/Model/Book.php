@@ -79,18 +79,24 @@ class Book extends ActiveRecord
      */
     public function getUsers()
     {
+        if (!$this->users) {
+            $usersId = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $this->getId()]);
+            foreach ($usersId as $userId) {
+                $user = User::find($userId['user_id']);
+                $this->users[] = $user;
+            }
+        }
+
         return $this->users;
     }
 
     /**
-     * @param array $users
-     * @return Book
+     * @param $users
      */
-    public function setUsers($users)
+    public function setUsers($user)
     {
-        $this->users = $users;
-
-        return $this;
+            Db::getInstance()->insert('users_to_books', ['user_id' => $user->getId(), 'book_id' => $this->getId()]);
+            $this->users[] = $user;
     }
 
     /**
@@ -241,6 +247,13 @@ class Book extends ActiveRecord
         return $books;
     }
 
+    public static function deleteIfOrphane($bookId)
+    {
+        $usersId = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $bookId]);
+        if (!$usersId) {
+            Book::find($bookId)->delete();
+        }
+    }
     /**
      * @param array $searchParameters
      * @return array

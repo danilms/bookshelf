@@ -85,9 +85,12 @@ class User extends ActiveRecord
      *
      * @param array $booksData
      */
-    public function setBooks($booksData)
+    public function setBooks($books)
     {
-        $this->books = $booksData;
+        foreach ($books as $book) {
+            Db::getInstance()->insert('users_to_books', ['user_id' => $this->getId(), 'book_id' => $book->getId()]);
+            $this->books[] = $book;
+        }
     }
 
     /**
@@ -122,6 +125,11 @@ class User extends ActiveRecord
         }
     }
 
+    public function deleteBook($bookId)
+    {
+        $this->delete('users_to_books', ['user_id' => $this->getId(), 'book_id' => $bookId]);
+        Book::deleteIfOrphane($bookId);
+    }
     /**
      * @return int
      */
@@ -245,7 +253,11 @@ class User extends ActiveRecord
      */
     private function fetchBooks()
     {
-        $this->books = Book::findBy(['owner_id' => $this->getId()]);
+        $booksId = Db::getInstance()->fetchBy('users_to_books', ['user_id' => $this->getId()]);
+        foreach ($booksId as $bookId) {
+            $book = Book::find($bookId['book_id']);
+            $this->books[] = $book;
+        }
     }
 
     /**

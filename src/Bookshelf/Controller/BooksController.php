@@ -14,7 +14,6 @@ use Bookshelf\Core\Validation\Validator;
 use Bookshelf\Model\Book;
 use Bookshelf\Model\Category;
 use Bookshelf\Model\Rating;
-use Bookshelf\Model\User;
 
 /**
  * @author Danil Vasiliev <daniil.vasilev@opensoftdev.ru>
@@ -67,7 +66,9 @@ class BooksController extends Controller
             $errors = $this->fillAndValidate($book);
             if (!$errors) {
                 $book->save();
-                $this->addSuccessMessage('Книга успешно добавлена!');
+                $book = Book::findOneBy(['name' => $book->getName()]);
+                $user = User::findOneBy(['email' => $this->session->get('email')]);
+                $book->setUsers($user);
 
                 $this->redirectTo('/books');
             }
@@ -83,8 +84,7 @@ class BooksController extends Controller
 
     public function updateAction()
     {
-        $book = Book::find($this->request->get('id'));
-
+        $book = Book::find($this->request->get('book_id'));
         if (!$book) {
             $this->addErrorMessage('Редактируемая книга не найдена!');
             $this->redirectTo('/books');
@@ -176,6 +176,27 @@ class BooksController extends Controller
     }
 
     /**
+     *
+     */
+    public function moreInfoAction()
+    {
+        if ($this->session->get('email')) {
+            $user = User::findOneBy(['email' => $this->session->get('email')]);
+            $books = $user->getBooks();
+            foreach ($books as $book) {
+                $bookId = $this->request->get('book_id');
+                if ($bookId == $book->getId()) {
+                    $params['book_owner'] = true;
+                }
+            }
+        }
+        $params['book'] = Book::find($this->request->get('book_id'));
+
+
+        return $this->templater->show($this->controllerName, 'MoreInfo', $params);
+    }
+
+    /**
      * @param Book $book
      * @return array
      */
@@ -197,7 +218,8 @@ class BooksController extends Controller
     private function validate($book)
     {
         $nameNotBlank = new NotBlankConstraint($book, 'name');
-        $nameUnique = new UniqueConstraint($book, 'name');
+        $message = sprintf('Такая книга уже есть в системе <a href="/books/more-info?book_id=%s">Перейти на страницу книги</a>', Book::findOneBy(['name' => $book->getName()])->getId());
+        $nameUnique = new UniqueConstraint($book, 'name', $message);
         $authorNotBlank = new NotBlankConstraint($book, 'author');
         $linkCorrect = new LinkConstraint($book, 'link');
         $categoryIsset = new EntityExistsConstraint($book->getCategory(), 'id', 'category');

@@ -2,6 +2,8 @@
 
 namespace Bookshelf\Controller;
 
+
+use Bookshelf\Model\Book;
 use Bookshelf\Model\User;
 use Bookshelf\Core\Validation\Constraint\EmailConstraint;
 use Bookshelf\Core\Validation\Constraint\AlphabeticalConstraint;
@@ -27,6 +29,13 @@ class UserController extends Controller
         $this->render('User', 'AccountPage', ['user' => $currentUser]);
     }
 
+    public function deleteBookAction()
+    {
+        $user = User::findOneBy(['email' => $this->session->get('email')]);
+        $user->deleteBook($this->request->get('book_id'));
+        header("Location: /user");
+        exit;
+    }
     /**
      * Method that show page for change user data
      */
@@ -36,6 +45,14 @@ class UserController extends Controller
         $this->render('User', 'ChangeData', ['user' => $user]);
     }
 
+    public function addBookAction()
+    {
+        $user = User::findOneBy(['email' => $this->session->get('email')]);
+        $book = Book::find($this->request->get('book_id'));
+        $user->setBooks([$book]);
+        $this->redirectTo('/user');
+        exit;
+    }
     /**
      * Method that update user data after changing
      */
