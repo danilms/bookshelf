@@ -5,6 +5,7 @@
 
 namespace Bookshelf\Model;
 
+use Bookshelf\Core\Session;
 use PDO;
 use Bookshelf\Core\Db;
 
@@ -26,9 +27,14 @@ class Book extends ActiveRecord
     private $description;
 
     /**
-     * @var string
+     * @var float
      */
     private $rating;
+
+    /**
+     * @var integer
+     */
+    private $newRating;
 
     /**
      * @var string
@@ -52,7 +58,7 @@ class Book extends ActiveRecord
     /**
      * @var array
      */
-    public $ratingValues = [0, 1, 2, 3, 4, 5];
+    public $ratingValues = [1, 2, 3, 4, 5];
 
     /**
      * @return Category
@@ -177,15 +183,15 @@ class Book extends ActiveRecord
     }
 
     /**
-     * @return integer
+     * @return float
      */
     public function getRating()
     {
-        return $this->rating;
+        return number_format($this->rating, 2);
     }
 
     /**
-     * @param integer $rating
+     * @param float $rating
      * @return Book
      */
     public function setRating($rating)
@@ -196,11 +202,74 @@ class Book extends ActiveRecord
     }
 
     /**
+     * @return integer
+     */
+    public function getNewRating()
+    {
+        return $this->newRating;
+    }
+
+    /**
+     * @param integer $newRating
+     * @return Book
+     */
+    public function setNewRating($newRating)
+    {
+        $this->newRating = $newRating;
+
+        return $this;
+    }
+
+
+
+    /**
      * @return string
      */
     public function getTableName()
     {
         return 'books';
+    }
+
+    /**
+     * Method that insert data in database if $id empty, if $id not empty will update data
+     *
+     * @param Rating $ratingObject
+     * @return bool
+     */
+    public function save($ratingObject = null)
+    {
+        try {
+            $instanceState = $this->toArray();
+            if (empty($instanceState['id'])) {
+                unset($instanceState['id']);
+                Db::getInstance()->insert($this->getTableName(), $instanceState);
+            } else {
+                $this->updateBook($this->getTableName(), $instanceState, ['id' => $instanceState['id']], $ratingObject);
+            }
+
+            return true;
+        } catch (DbException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $tableName
+     * @param array $newValues
+     * @param array $conditions
+     * @param Rating $ratingObject
+     */
+    public function updateBook($tableName, array $newValues, array $conditions = [], $ratingObject = null)
+    {
+        if ($ratingObject->getRating()) {
+            $ratingObject->setBookId($newValues['id']);
+            $session = new Session();
+            $ratingObject->setUserId(User::findOneBy(['email'=>$session->get('email')])->getId());
+
+            $ratingObject->save();
+        } else {
+            Db::getInstance()->update($tableName, $newValues, $conditions);
+        }
     }
 
     /**
@@ -239,6 +308,8 @@ class Book extends ActiveRecord
 
         return $books;
     }
+
+
 
     /**
      * @param array $searchParameters
@@ -299,7 +370,6 @@ class Book extends ActiveRecord
             'category_id' => $this->category->getId(),
             'name' => $this->name,
             'description' => $this->description,
-            'rating' => $this->rating,
             'link' => $this->link,
             'author' => $this->author
         ];

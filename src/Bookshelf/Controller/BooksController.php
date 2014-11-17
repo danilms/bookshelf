@@ -13,6 +13,8 @@ use Bookshelf\Core\Validation\Constraint\UniqueConstraint;
 use Bookshelf\Core\Validation\Validator;
 use Bookshelf\Model\Book;
 use Bookshelf\Model\Category;
+use Bookshelf\Model\Rating;
+use Bookshelf\Model\User;
 
 /**
  * @author Danil Vasiliev <daniil.vasilev@opensoftdev.ru>
@@ -121,6 +123,41 @@ class BooksController extends Controller
         $this->redirectTo('/books');
     }
 
+    public function InfoAction()
+    {
+        $book = Book::find($this->request->get('id'));
+        $rating = new Rating();
+
+        if (!$book) {
+            $this->addErrorMessage('Книга не найдена!');
+            $this->redirectTo('/books');
+        }
+
+        $bookId = $book->getId();
+        $userId = User::findOneBy(['email'=>$this->session->get('email')])->getId();
+        $isRated = false;
+        if (Rating::findBy(['book_id' => $bookId, 'user_id' => $userId])) {
+            $isRated = true;
+        }
+
+        $errors = [];
+        if ($this->request->isPost()) {
+
+            $rating->setRating($this->request->get('rating'));
+            $ratingCorrect = new ChoiceConstraint($rating, 'rating', $book->ratingValues);
+            $validator = new Validator();
+            $validator->addConstraint($ratingCorrect);
+            $errors = $validator->validate();
+
+            if (!$errors) {
+                $book->save($rating);
+                $this->redirectTo('/books/info?id=' . $book->getId());
+            }
+        }
+
+        return $this->templater->show($this->controllerName, 'Info', ['book' => $book, 'errors' => $errors, 'is_rated' =>$isRated]);
+    }
+
     /**
      * @param Book $book
      * @return array
@@ -131,7 +168,6 @@ class BooksController extends Controller
         $book->setAuthor($this->request->get('author'));
         $book->setCategory($this->request->get('category_id'));
         $book->setDescription($this->request->get('description'));
-        $book->setRating($this->request->get('rating'));
         $book->setLink($this->request->get('link'));
 
         return $this->validate($book);
@@ -147,7 +183,6 @@ class BooksController extends Controller
         $nameUnique = new UniqueConstraint($book, 'name');
         $authorNotBlank = new NotBlankConstraint($book, 'author');
         $linkCorrect = new LinkConstraint($book, 'link');
-        $ratingCorrect = new ChoiceConstraint($book, 'rating', $book->ratingValues);
         $categoryIsset = new EntityExistsConstraint($book->getCategory(), 'id', 'category');
 
         $validator = new Validator();
@@ -155,7 +190,6 @@ class BooksController extends Controller
         $validator->addConstraint($nameUnique);
         $validator->addConstraint($authorNotBlank);
         $validator->addConstraint($linkCorrect);
-        $validator->addConstraint($ratingCorrect);
         $validator->addConstraint($categoryIsset);
 
         $errors = $validator->validate();

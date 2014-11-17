@@ -1,0 +1,44 @@
+<?php include(__DIR__ . '/../header.html'); ?>
+
+<div class="container">
+    <div class="page-header">
+        <p><span style="font-size: xx-large"><?php echo $params['book']->getName() ?></span></p>
+        <p><span style="font-size: large">Автор: <?php echo $params['book']->getAuthor() ?></span></p>
+    </div>
+    <div class="col-md-6">
+        <p><span style="font-size: medium; font-weight: bold">Категория: <?php echo $params['book']->getCategory()->getName() ?></span> </p>
+        <p><span style="font-size: medium; font-weight: bold">Рейтинг: <?php echo $params['book']->getRating() ?></span> </p>
+
+        <?php if (!$params['is_rated']): ?>
+            <form class="form-horizontal" role="form" method="post" action="/books/info">
+                <div class="form-group <?php echo isset($params['errors']['rating']) ? 'has-error' : ''; ?>">
+                    <label for="rating" class="col-sm-2 control-label">Оценить:</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" id="rating" name="rating">
+                            <?php foreach ($params['book']->ratingValues as $value):?>
+                                <option><?php echo $value?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if (isset($params['errors']['rating'])):?>
+                            <span class="help-block"> <?php echo $params['errors']['rating'][0]; ?> </span>
+                        <?php endif;?>
+                    </div>
+
+                    <input type="hidden" name="id" id="id" value="<?php echo $params['book']->getId();?>">
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary">Оценить</button>
+                    </div>
+                </div>
+            </form>
+        <?php endif; ?>
+
+        <p><span style="font-size: medium; font-weight: bold">Описание:</span></p>
+        <p><span style="font-size: medium"><?php echo $params['book']->getDescription() ?></span></p>
+        <p><span style="font-size: medium; font-weight: bold">Имеется у:</span> </p>
+        <?php foreach ($params['book']->getUsers() as $user): ?>
+            <p><span style="font-size: medium"><?php printf("%s %s ", $user->getFirstName(), $user->getLastName()) ?></span></p>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<?php include(__DIR__ . '/../footer.html'); ?>
