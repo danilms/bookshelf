@@ -1,54 +1,34 @@
 <?php include(__DIR__ . '/../header.html'); ?>
 
-<link  rel="stylesheet" type="text/css" href="/css/star-rating.css">
-
 <div class="container">
     <div class="page-header">
-        <p><span class="book-name"><?= $params['book']->getName() ?></span></p>
-        <p><span class="book-author">Автор: <?= $params['book']->getAuthor() ?></span></p>
+        <p><span style="font-size: xx-large"><?php echo $params['book']->getName() ?></span></p>
+        <p><span style="font-size: large">Автор: <?php echo $params['book']->getAuthor() ?></span></p>
     </div>
     <div class="col-md-6">
-        <p><b>Категория: <?= $params['book']->getCategory()->getName() ?></b> </p>
-        <p><b>Рейтинг: <?= $params['book']->getRating() ?></span> </b>
-
-        <?php if (!$params['is_rated']): ?>
-            <form class="form-horizontal" role="form" method="post">
-                <div class="form-group <?= isset($params['errors']['rating']) ? 'has-error' : ''; ?>">
-                    <label for="rating" class="col-sm-2 control-label">Оценить:</label>
-                    <div class="col-sm-4">
-                        <input id="rating" class="rating" data-min="0" data-max="5" data-step="1">
-                        <?php if (isset($params['errors']['rating'])):?>
-                            <span class="help-block"> <?= $params['errors']['rating'][0]; ?> </span>
-                        <?php endif;?>
-                    </div>
-                </div>
-            </form>
-        <?php endif; ?>
-
-        <p><b>Описание:</b></p>
-        <p><b><?= $params['book']->getDescription() ?></b></p>
-        <p><b>Имеется у:</b> </p>
+        <p><span style="font-size: medium; font-weight: bold">Категория: <?php echo $params['book']->getCategory()->getName() ?></span> </p>
+        <p><span style="font-size: medium; font-weight: bold">Рейтинг: <?php echo $params['book']->getRating() ?></span> </p>
+        <p><span style="font-size: medium; font-weight: bold">Описание:</span></p>
+        <p><span style="font-size: medium"><?php echo $params['book']->getDescription() ?></span></p>
+        <p><span style="font-size: medium; font-weight: bold">Имеется у:</span> </p>
         <?php foreach ($params['book']->getUsers() as $user): ?>
             <p><span style="font-size: medium"><?php printf("%s %s ", $user->getFirstName(), $user->getLastName()) ?></span></p>
         <?php endforeach; ?>
+        <?php if (isset($_SESSION['email'])): ?>
+            <?php if (isset($params['book_owner']) && $params['book_owner'] === true): ?>
+                <a href="/books/update?book_id=<?php echo $params['book']->getId(); ?>" class="btn btn-default">
+                    Редактировать данные книги
+                </a>
+            <?php else: ?>
+                <span style="font-weight: bold">Если у вас тоже есть подобная книга, вы можете:</span>
+                <p><a href="/user/attach-book?book_id=<?php echo $params['book']->getId(); ?>" class="btn btn-default">
+                    Поделиться книгой
+                </a></p>
+            <?php endif; ?>
+        <?php endif; ?>
     </div>
 </div>
 
-<script src="/js/star-rating.js"></script>
-<script type="text/javascript">
-    var id = <?= $params['book']->getId();?>
 
-    $("#rating").rating({'size': 'sm', 'showClear': false, 'showCaption': false});
-    $('#rating').on('rating.change', function(event, value) {
-        $.ajax({
-            type: "POST",
-            url: "/books/addRating",
-            data: {rating: value, id: id},
-            success: function(){
-                $('#rating').rating('refresh', {readonly: true});
-            }
-        });
-    });
-</script>
 
 <?php include(__DIR__ . '/../footer.html'); ?>

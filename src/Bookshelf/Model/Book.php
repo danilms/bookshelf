@@ -80,9 +80,12 @@ class Book extends ActiveRecord
     public function getUsers()
     {
         if (!$this->users) {
-            $usersId = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $this->getId()]);
-            foreach ($usersId as $userId) {
-                $user = User::find($userId['user_id']);
+            $sql = "SELECT users.* FROM users_to_books INNER JOIN users ON users_to_books.user_id = users.id WHERE users_to_books.book_id = $this->id";
+            Db::getInstance()->execute($sql);
+            $usersData = Db::getInstance()->getStatement()->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($usersData as $userData) {
+                $user = new User();
+                $user->initStateFromArray($userData);
                 $this->users[] = $user;
             }
         }
@@ -93,10 +96,9 @@ class Book extends ActiveRecord
     /**
      * @param $users
      */
-    public function setUsers($user)
+    public function setUsers($users)
     {
-            Db::getInstance()->insert('users_to_books', ['user_id' => $user->getId(), 'book_id' => $this->getId()]);
-            $this->users[] = $user;
+        $this->users = $users;
     }
 
     /**
@@ -249,8 +251,8 @@ class Book extends ActiveRecord
 
     public static function deleteIfOrphane($bookId)
     {
-        $usersId = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $bookId]);
-        if (!$usersId) {
+        $arrayOfBinds = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $bookId]);
+        if (!$arrayOfBinds) {
             Book::find($bookId)->delete();
         }
     }

@@ -243,7 +243,7 @@ class Db
 
         try {
             $this->execute($sql, $optionValues);
-            
+
             return $this->getStatement()->fetch(PDO::FETCH_ASSOC);
         } catch (DbException $e) {
             throw DbException::insertFailed($tableName, $keys, implode(', ', $optionValues), $e);

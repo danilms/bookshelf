@@ -50,6 +50,7 @@ class UniqueConstraint implements ConstraintInterface
         if ($resultModel) {
             if (!$this->model->getId() || ($this->model->getId() && $this->model->getId() != $resultModel->getId())) {
                 $errors[$this->propertyName][] = $this->message;
+                $errors['unique'] = $resultModel;
             }
 
         }

@@ -2,7 +2,6 @@
 
 namespace Bookshelf\Controller;
 
-
 use Bookshelf\Model\Book;
 use Bookshelf\Model\User;
 use Bookshelf\Core\Validation\Constraint\EmailConstraint;
@@ -33,9 +32,9 @@ class UserController extends Controller
     {
         $user = User::findOneBy(['email' => $this->session->get('email')]);
         $user->deleteBook($this->request->get('book_id'));
-        header("Location: /user");
-        exit;
+        $this->redirectTo('/user');
     }
+
     /**
      * Method that show page for change user data
      */
@@ -45,14 +44,19 @@ class UserController extends Controller
         $this->render('User', 'ChangeData', ['user' => $user]);
     }
 
-    public function addBookAction()
+    public function attachBookAction()
     {
-        $user = User::findOneBy(['email' => $this->session->get('email')]);
+        $user = $this->getCurrentUser();
         $book = Book::find($this->request->get('book_id'));
-        $user->setBooks([$book]);
-        $this->redirectTo('/user');
-        exit;
+        if ($book) {
+            $user->setBooks([$book]);
+            $this->redirectTo('/user');
+        } else {
+            $this->addErrorMessage('Книга не найдена');
+            $this->redirectTo('/books');
+        }
     }
+
     /**
      * Method that update user data after changing
      */
@@ -66,6 +70,7 @@ class UserController extends Controller
         $errorArray = $this->validateUserUpdate($user);
 
         $currentUser = $this->getCurrentUser();
+        $user->setId($currentUser->getId());
         $currentUser->getContacts();
         $user->setPassword($this->changePassword($currentUser));
         $params['user'] = $user;
@@ -79,8 +84,9 @@ class UserController extends Controller
         if ($user->save()) {
             $this->redirectTo("/user");
         } else {
-            $params['errors']['save_fail'][] = 'Произошёл сбой при попытке сменить данные пользователя. Пожалуйста повторите попытку позднее';
+            $this->addErrorMessage('Произошёл сбой при попытке сменить данные пользователя. Пожалуйста повторите попытку позднее');
             $this->logger->emergency('Cant save user in DataBase');
+
             return $this->render('User', 'ChangeData', $params);
         }
     }
@@ -97,6 +103,7 @@ class UserController extends Controller
         foreach ($constraints as $constraint) {
             $validator->addConstraint($constraint);
         }
+
         return $validator->validate();
     }
 
