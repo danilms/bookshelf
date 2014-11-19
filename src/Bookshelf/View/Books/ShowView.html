@@ -10,23 +10,14 @@
         <p><span style="font-size: medium; font-weight: bold">Рейтинг: <?php echo $params['book']->getRating() ?></span> </p>
 
         <?php if (!$params['is_rated']): ?>
-            <form class="form-horizontal" role="form" method="post" action="/books/info">
+            <form class="form-horizontal" role="form" method="post">
                 <div class="form-group <?php echo isset($params['errors']['rating']) ? 'has-error' : ''; ?>">
                     <label for="rating" class="col-sm-2 control-label">Оценить:</label>
                     <div class="col-sm-4">
-                        <select class="form-control" id="rating" name="rating">
-                            <?php foreach ($params['book']->ratingValues as $value):?>
-                                <option><?php echo $value?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input id="rating" class="rating" data-min="0" data-max="5" data-step="1">
                         <?php if (isset($params['errors']['rating'])):?>
                             <span class="help-block"> <?php echo $params['errors']['rating'][0]; ?> </span>
                         <?php endif;?>
-                    </div>
-
-                    <input type="hidden" name="id" id="id" value="<?php echo $params['book']->getId();?>">
-                    <div class="col-sm-4">
-                        <button type="submit" class="btn btn-primary">Оценить</button>
                     </div>
                 </div>
             </form>
@@ -40,5 +31,25 @@
         <?php endforeach; ?>
     </div>
 </div>
+
+<link  rel="stylesheet" type="text/css" href="/css/star-rating.css">
+<script src="/js/star-rating.js"></script>
+<script type="text/javascript">
+    var id = <?php echo $params['book']->getId();?>
+
+    $("#rating").rating({'size': 'sm', 'showClear': false, 'showCaption': false});
+
+    $('#rating').on('rating.change', function(event, value) {
+
+        $.ajax({
+            type: "POST",
+            url: "/books/addRating",
+            data: {rating: value, id: id},
+            success: function(){
+                $('#rating').rating('refresh', {readonly: true});
+            }
+        });
+    });
+</script>
 
 <?php include(__DIR__ . '/../footer.html'); ?>

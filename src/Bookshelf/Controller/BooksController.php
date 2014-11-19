@@ -123,10 +123,12 @@ class BooksController extends Controller
         $this->redirectTo('/books');
     }
 
-    public function InfoAction()
+    public function showAction()
     {
+
+
         $book = Book::find($this->request->get('id'));
-        $rating = new Rating();
+
 
         if (!$book) {
             $this->addErrorMessage('Книга не найдена!');
@@ -141,21 +143,35 @@ class BooksController extends Controller
         }
 
         $errors = [];
-        if ($this->request->isPost()) {
 
-            $rating->setRating($this->request->get('rating'));
-            $ratingCorrect = new ChoiceConstraint($rating, 'rating', $book->ratingValues);
-            $validator = new Validator();
-            $validator->addConstraint($ratingCorrect);
-            $errors = $validator->validate();
+        return $this->templater->show($this->controllerName, 'show', ['book' => $book, 'errors' => $errors, 'is_rated' =>$isRated]);
+    }
 
-            if (!$errors) {
-                $book->save($rating);
-                $this->redirectTo('/books/info?id=' . $book->getId());
-            }
+    /**
+     * @return array
+     */
+    public function addRatingAction()
+    {
+        var_dump($this->request->data);
+
+        $book = Book::find($this->request->get('id'));
+
+        $rating = new Rating();
+        $rating->setRating($this->request->get('rating'));
+        $rating->setBookId($book->getId());
+        $rating->setUserId(User::findOneBy(['email'=>$this->session->get('email')])->getId());
+
+        $ratingCorrect = new ChoiceConstraint($rating, 'rating', $book->ratingValues);
+        $validator = new Validator();
+        $validator->addConstraint($ratingCorrect);
+        $errors = $validator->validate();
+
+        if (!$errors) {
+            $rating->save();
+            $this->redirectTo('/books/show?id=' . $book->getId());
         }
 
-        return $this->templater->show($this->controllerName, 'Info', ['book' => $book, 'errors' => $errors, 'is_rated' =>$isRated]);
+        return $this->templater->show($this->controllerName, 'show', ['book' => $book, 'errors' => $errors]);
     }
 
     /**
