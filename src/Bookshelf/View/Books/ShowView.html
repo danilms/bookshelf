@@ -1,13 +1,15 @@
 <?php include(__DIR__ . '/../header.html'); ?>
 
+<link  rel="stylesheet" type="text/css" href="/css/star-rating.css">
+
 <div class="container">
     <div class="page-header">
-        <p><span style="font-size: xx-large"><?php echo $params['book']->getName() ?></span></p>
-        <p><span style="font-size: large">Автор: <?php echo $params['book']->getAuthor() ?></span></p>
+        <p><span class="book-name"><?php echo $params['book']->getName() ?></span></p>
+        <p><span class="book-author">Автор: <?php echo $params['book']->getAuthor() ?></span></p>
     </div>
     <div class="col-md-6">
-        <p><span style="font-size: medium; font-weight: bold">Категория: <?php echo $params['book']->getCategory()->getName() ?></span> </p>
-        <p><span style="font-size: medium; font-weight: bold">Рейтинг: <?php echo $params['book']->getRating() ?></span> </p>
+        <p><b>Категория: <?php echo $params['book']->getCategory()->getName() ?></b> </p>
+        <p><b>Рейтинг: <?php echo $params['book']->getRating() ?></span> </b>
 
         <?php if (!$params['is_rated']): ?>
             <form class="form-horizontal" role="form" method="post">
@@ -23,24 +25,20 @@
             </form>
         <?php endif; ?>
 
-        <p><span style="font-size: medium; font-weight: bold">Описание:</span></p>
-        <p><span style="font-size: medium"><?php echo $params['book']->getDescription() ?></span></p>
-        <p><span style="font-size: medium; font-weight: bold">Имеется у:</span> </p>
+        <p><b>Описание:</b></p>
+        <p><b><?php echo $params['book']->getDescription() ?></b></p>
+        <p><b>Имеется у:</b> </p>
         <?php foreach ($params['book']->getUsers() as $user): ?>
             <p><span style="font-size: medium"><?php printf("%s %s ", $user->getFirstName(), $user->getLastName()) ?></span></p>
         <?php endforeach; ?>
     </div>
 </div>
 
-<link  rel="stylesheet" type="text/css" href="/css/star-rating.css">
 <script src="/js/star-rating.js"></script>
 <script type="text/javascript">
     var id = <?php echo $params['book']->getId();?>
-
     $("#rating").rating({'size': 'sm', 'showClear': false, 'showCaption': false});
-
     $('#rating').on('rating.change', function(event, value) {
-
         $.ajax({
             type: "POST",
             url: "/books/addRating",

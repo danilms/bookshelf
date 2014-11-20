@@ -34,3 +34,15 @@ CREATE TABLE  users_to_books (
     user_id int REFERENCES users(id),
     book_id int REFERENCES books(id)
 );
+
+CREATE FUNCTION update_rating() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+UPDATE books
+SET rating = (SELECT avg(rating) FROM ratings
+WHERE books.id = ratings.book_id);
+return NEW;
+END;
+$$;
+
+CREATE TRIGGER rating_trigger AFTER INSERT ON ratings FOR EACH STATEMENT EXECUTE PROCEDURE update_rating();

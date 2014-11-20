@@ -25,6 +25,7 @@ Installation:
  - `ln vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css web/css/`
  - `ln vendor/twbs/bootstrap/dist/js/bootstrap.min.js web/js/`
  - `ln vendor/frameworks/jquery/jquery.min.js web/js/`
+ - `ln vendor/pqr/star-rating/css/star-rating.css web/css/`
+ - `ln vendor/pqr/star-rating/js/star-rating.js web/js/`
  
 3. Create database 'bookshelf' and restore dump (resources/scheme.sql).
-

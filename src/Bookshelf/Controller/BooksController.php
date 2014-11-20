@@ -125,26 +125,32 @@ class BooksController extends Controller
 
     public function showAction()
     {
+        if (!$this->getCurrentUser()) {
+            $this->redirectTo('/login');
+        } else {
 
+            $book = Book::find($this->request->get('id'));
+            if (!$book) {
+                $this->addErrorMessage('Книга не найдена!');
+                $this->redirectTo('/books');
+            }
 
-        $book = Book::find($this->request->get('id'));
+            $bookId = $book->getId();
+            $userId = $this->getCurrentUser()->getId();
+            $isRated = false;
+            if (Rating::findBy(['book_id' => $bookId, 'user_id' => $userId])) {
+                $isRated = true;
+            }
+            $errors = [];
 
-
-        if (!$book) {
-            $this->addErrorMessage('Книга не найдена!');
-            $this->redirectTo('/books');
+            return $this->templater->show($this->controllerName, 'show',
+                [
+                    'book' => $book,
+                    'errors' => $errors,
+                    'is_rated' => $isRated,
+                    'currentUser' => $this->getCurrentUser()
+                ]);
         }
-
-        $bookId = $book->getId();
-        $userId = User::findOneBy(['email'=>$this->session->get('email')])->getId();
-        $isRated = false;
-        if (Rating::findBy(['book_id' => $bookId, 'user_id' => $userId])) {
-            $isRated = true;
-        }
-
-        $errors = [];
-
-        return $this->templater->show($this->controllerName, 'show', ['book' => $book, 'errors' => $errors, 'is_rated' =>$isRated]);
     }
 
     /**
@@ -152,14 +158,12 @@ class BooksController extends Controller
      */
     public function addRatingAction()
     {
-        var_dump($this->request->data);
-
         $book = Book::find($this->request->get('id'));
 
         $rating = new Rating();
         $rating->setRating($this->request->get('rating'));
         $rating->setBookId($book->getId());
-        $rating->setUserId(User::findOneBy(['email'=>$this->session->get('email')])->getId());
+        $rating->setUserId($this->getCurrentUser()->getId());
 
         $ratingCorrect = new ChoiceConstraint($rating, 'rating', $book->ratingValues);
         $validator = new Validator();
