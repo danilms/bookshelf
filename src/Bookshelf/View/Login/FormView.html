@@ -2,18 +2,18 @@
 
 <div class="container">
     <form class="form-signin" action="/login/login" method="post">
-        <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['email'])) ? 'has-error' : ''; ?>">
+        <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['email'])) ? 'has-error' : ''; ?>">
             <label class="control-label" for="email">Email</label>
             <?php if (isset($params['errors']) && !empty($params['errors']['email'])): ?>
-                <span class="help-block"><?php echo $params['errors']['email'][0]?></span>
+                <span class="help-block"><?= $params['errors']['email'][0]?></span>
             <?php endif; ?>
-            <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="<?php echo (isset($params['email'])) ? $params['email'] : '';  ?>" autofocus/>
+            <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="<?= (isset($params['email'])) ? $params['email'] : '';  ?>" autofocus/>
         </div>
 
-        <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['password'])) ? 'has-error' : '' ?>">
+        <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['password'])) ? 'has-error' : '' ?>">
             <label class="control-label" for="password">Пароль</label>
             <?php if (isset($params['errors']) && !empty($params['errors']['password'])): ?>
-                <span class="help-block"><?php echo $params['errors']['password'][0]?></span>
+                <span class="help-block"><?= $params['errors']['password'][0]?></span>
             <?php endif; ?>
             <input type="password" id="password" class="form-control" placeholder="Пароль" name="password" />
         </div>

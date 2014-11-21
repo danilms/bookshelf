@@ -2,11 +2,11 @@
 <?php $user = $params['user'];?>
 <div class="container">
     <div class="page-header">
-        <h3>Это ваша страница, <?php echo $user->getFirstname()?></h3>
+        <h3>Это ваша страница, <?= $user->getFirstname()?></h3>
     </div>
-    <h4>Имя: <?php echo $user->getFirstname() ?></h4>
-    <h4>Фамилия: <?php echo $user->getLastname() ?></h4>
-    <h4>Email: <?php echo $user->getEmail() ?></h4>
+    <h4>Имя: <?= $user->getFirstname() ?></h4>
+    <h4>Фамилия: <?= $user->getLastname() ?></h4>
+    <h4>Email: <?= $user->getEmail() ?></h4>
     <div class="row">
         <?php if ($user->getContacts()): ?>
         <div class="col-md-4">
@@ -19,8 +19,8 @@
                 <tbody>
                     <?php foreach($user->getContacts() as $contact):?>
                         <tr>
-                            <td><?php echo $contact->getType() ?></td>
-                            <td><?php echo $contact->getValue() ?></td>
+                            <td><?= $contact->getType() ?></td>
+                            <td><?= $contact->getValue() ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -43,12 +43,12 @@
                 <tbody>
                     <?php foreach($user->getBooks() as $book):?>
                         <tr>
-                            <td><?php echo $book->getName() ?></td>
-                            <td><?php echo $book->getAuthor() ?></td>
-                            <td><?php echo $book->getDescription() ?></td>
-                            <td><?php echo $book->getRating() ?></td>
-                            <td><?php echo $book->getCategory()->getName() ?></td>
-                            <td><a href="<?php echo $book->getLink() ?>"><span class="glyphicon glyphicon-link"></span></a></td>
+                            <td><?= $book->getName() ?></td>
+                            <td><?= $book->getAuthor() ?></td>
+                            <td><?= $book->getDescription() ?></td>
+                            <td><?= $book->getRating() ?></td>
+                            <td><?= $book->getCategory()->getName() ?></td>
+                            <td><a href="<?= $book->getLink() ?>"><span class="glyphicon glyphicon-link"></span></a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -57,7 +57,7 @@
     <?php endif; ?>
     </div>
     <div>
-        <a style="font-size: large" href="/user/show/?id=<?php echo $user->getId()?>">Изменить свои данные</a>
+        <a style="font-size: large" href="/user/show/?id=<?= $user->getId()?>">Изменить свои данные</a>
     </div>
 </div>
 

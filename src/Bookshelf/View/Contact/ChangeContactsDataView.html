@@ -2,23 +2,23 @@
 
 <div class="container">
     <div class="col-md-1">
-        <a href="/user/show/?id=<?php echo $params['contact']->getUser()->getId() ?>"><span class="glyphicon glyphicon-chevron-left" style=""></span></a>
+        <a href="/user/show/?id=<?= $params['contact']->getUser()->getId() ?>"><span class="glyphicon glyphicon-chevron-left" style=""></span></a>
     </div>
-    <form class="form-signin" action="/contacts/change-data?contact_id=<?php echo $params['contact']->getId()?>" method="post">
+    <form class="form-signin" action="/contacts/change-data?contact_id=<?= $params['contact']->getId()?>" method="post">
         <label>Тип контакта</label>
 
         <select  class="form-control" name="contact_type"  required>
-            <option selected name="contact_type" value="<?php echo $params['contact']->getType()?>"><?php echo $params['contact']->getType()?></option>
-            <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::SKYPE_TYPE ?>">Skype</option>
-            <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::EMAIL_TYPE ?>">Email</option>
-            <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::PHONE_TYPE ?>">Телефон</option>
+            <option selected name="contact_type" value="<?= $params['contact']->getType()?>"><?= $params['contact']->getType()?></option>
+            <option name="contact_type" value="<?= Bookshelf\Model\Contact::SKYPE_TYPE ?>">Skype</option>
+            <option name="contact_type" value="<?= Bookshelf\Model\Contact::EMAIL_TYPE ?>">Email</option>
+            <option name="contact_type" value="<?= Bookshelf\Model\Contact::PHONE_TYPE ?>">Телефон</option>
         </select>
 
         <div class="form-group (isset($params['errors']['value']) && !empty($params['errors']['value'])) ? 'has-error' : ''; ?>">
             <?php if (isset($params['errors']['value']) && !empty($params['errors']['value'])): ?>
-                <span class="help-block"><?php echo $params['errors']['value'][0] ?></span>
+                <span class="help-block"><?= $params['errors']['value'][0] ?></span>
             <?php endif; ?>
-            <input type="text" class="form-control" placeholder="Значение" name="value" value="<?php echo $params['contact']->getValue()?>" required/>
+            <input type="text" class="form-control" placeholder="Значение" name="value" value="<?= $params['contact']->getValue()?>" required/>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit" value="Save">Сохранить</button>
     </form>

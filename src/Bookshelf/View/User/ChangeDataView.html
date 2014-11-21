@@ -12,7 +12,7 @@
                 <tr>
                     <th>Контакты</th>
                     <?php if (isset($params['errors']) && !empty($params['errors']['contact'])): ?>
-                        <span style="color: red" class="help-block"><?php echo $params['errors']['contact'] ?></span>
+                        <span style="color: red" class="help-block"><?= $params['errors']['contact'] ?></span>
                     <?php endif; ?>
                 </tr>
                 </thead>
@@ -20,13 +20,13 @@
 
                 <?php foreach($params['user']->getContacts() as $contact):?>
                 <tr>
-                    <td><?php echo $contact->getType() ?></td>
-                    <td><?php echo $contact->getValue() ?></td>
+                    <td><?= $contact->getType() ?></td>
+                    <td><?= $contact->getValue() ?></td>
                     <td>
-                        <a href="/contacts/show-contact/?contact_id=<?php echo $contact->getId() ?>"><button type="submit"><span class="glyphicon glyphicon-pencil"></span></button></a>
+                        <a href="/contacts/show-contact/?contact_id=<?= $contact->getId() ?>"><button type="submit"><span class="glyphicon glyphicon-pencil"></span></button></a>
                     </td>
                     <td>
-                        <a href="/contacts/delete-contacts-data?contact_id=<?php echo $contact->getId() ?>"> <button type="submit"><span class="glyphicon glyphicon-trash"></span></button></a>
+                        <a href="/contacts/delete-contacts-data?contact_id=<?= $contact->getId() ?>"> <button type="submit"><span class="glyphicon glyphicon-trash"></span></button></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -34,22 +34,22 @@
                 </tbody>
             </table>
             <?php endif; ?>
-            <form class="form-signin" action="/contacts/add-contact?user_id=<?php echo $params['user']->getId() ?>" method="post">
+            <form class="form-signin" action="/contacts/add-contact?user_id=<?= $params['user']->getId() ?>" method="post">
                 <legend>Тип контакта</legend>
-                <div class="form-group <?php echo (isset($params['errors']['type']) && !empty($params['errors']['type'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']['type']) && !empty($params['errors']['type'])) ? 'has-error' : ''; ?>">
                     <?php if (isset($params['errors']['type']) && !empty($params['errors']['type'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['type'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['type'][0] ?></span>
                     <?php endif; ?>
                 <select  class="form-control" name="contact_type" required>
                     <option selected disabled>Выберите тип контакта</option>
-                    <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::SKYPE_TYPE ?>">Skype</option>
-                    <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::EMAIL_TYPE ?>">Email</option>
-                    <option name="contact_type" value="<?php echo Bookshelf\Model\Contact::PHONE_TYPE ?>">Телефон</option>
+                    <option name="contact_type" value="<?= Bookshelf\Model\Contact::SKYPE_TYPE ?>">Skype</option>
+                    <option name="contact_type" value="<?= Bookshelf\Model\Contact::EMAIL_TYPE ?>">Email</option>
+                    <option name="contact_type" value="<?= Bookshelf\Model\Contact::PHONE_TYPE ?>">Телефон</option>
                 </select>
                 </div>
-                <div class="form-group <?php echo (isset($params['errors']['value']) && !empty($params['errors']['value'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']['value']) && !empty($params['errors']['value'])) ? 'has-error' : ''; ?>">
                     <?php if (isset($params['errors']['value']) && !empty($params['errors']['value'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['value'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['value'][0] ?></span>
                     <?php endif; ?>
                     <input type="text" class="form-control" placeholder="Значение" name="value" required/>
                 </div>
@@ -60,36 +60,36 @@
             <form class="form-signin" action="/user/change-user-data" method="post">
                 <legend>Персональные данные</legend>
 
-                <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['firstname'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['firstname'])) ? 'has-error' : ''; ?>">
                     <label class="control-label" for="firstname">Имя</label>
                     <?php if (isset($params['errors']) && !empty($params['errors']['firstname'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['firstname'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['firstname'][0] ?></span>
                     <?php endif; ?>
-                    <input type="text" id="firstname" class="form-control" placeholder="Имя" name="firstname" value="<?php echo $params['user']->getFirstname() ?>" required/>
+                    <input type="text" id="firstname" class="form-control" placeholder="Имя" name="firstname" value="<?= $params['user']->getFirstname() ?>" required/>
                 </div>
 
-                <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['lastname'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['lastname'])) ? 'has-error' : ''; ?>">
                     <label class="control-label" for="lastname">Фамилия</label>
                     <?php if (isset($params['errors']) && !empty($params['errors']['lastname'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['lastname'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['lastname'][0] ?></span>
                     <?php endif; ?>
-                    <input type="text" id="lastname" class="form-control" placeholder="Фамилия" name="lastname" value="<?php echo $params['user']->getLastname()?>" required/>
+                    <input type="text" id="lastname" class="form-control" placeholder="Фамилия" name="lastname" value="<?= $params['user']->getLastname()?>" required/>
                 </div>
 
-                <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['email'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['email'])) ? 'has-error' : ''; ?>">
                     <label class="control-label" for="email">Email</label>
                     <?php if (isset($params['errors']) && !empty($params['errors']['email'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['email'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['email'][0] ?></span>
                     <?php endif; ?>
-                    <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="<?php echo $params['user']->getEmail()?>" required/>
+                    <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="<?= $params['user']->getEmail()?>" required/>
                 </div>
 
                 <label>Вы можете изменить свой пароль, или же оставьте эти поля пустыми</label>
 
-                <div class="form-group <?php echo (isset($params['errors']) && !empty($params['errors']['password'])) ? 'has-error' : ''; ?>">
+                <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['password'])) ? 'has-error' : ''; ?>">
                     <label class="control-label" for="password">Пароль</label>
                     <?php if (isset($params['errors']) && !empty($params['errors']['password'])): ?>
-                        <span class="help-block"><?php echo $params['errors']['password'][0] ?></span>
+                        <span class="help-block"><?= $params['errors']['password'][0] ?></span>
                     <?php endif; ?>
                     <input type="password" id="password" class="form-control" placeholder="Пароль" name="password" />
                 </div>
