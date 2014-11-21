@@ -14,7 +14,7 @@
         Результат не найден! Попробуйте ввести другой запрос.
     <?php else:?>
         <?php if (isset($_POST['search'])):?>
-            Результаты поиска по запросу "<?php echo $_POST['search']?>" :
+            Результаты поиска по запросу "<?= $_POST['search']?>" :
         <?php endif;?>
 
         <?php include(__DIR__ . '/../FlashMessages.html'); ?>
@@ -26,19 +26,19 @@
             </tr>
                 <?php foreach ($params['books'] as $key => $category):?>
                    <th colspan="4" class="category">
-                        <?php echo $key; ?>
+                        <?= $key; ?>
                    </th>
                         <?php foreach ($category as $book): ?>
                             <tr>
-                                <td class="col-md-3"><?php echo $book->getAuthor();?></td>
-                                <td class="col-md-7"><a href="/books/show?id=<?php echo $book->getId(); ?>"><?php echo $book->getName(); ?></a></td>
+                                <td class="col-md-3"><?= $book->getAuthor();?></td>
+                                <td class="col-md-7"><a href="/books/show?id=<?= $book->getId(); ?>"><?= $book->getName(); ?></a></td>
                                 <td align="center" class="col-md-1">
-                                    <a href="/books/update?id=<?php echo $book->getId(); ?>" class="btn btn-default">
+                                    <a href="/books/update?id=<?= $book->getId(); ?>" class="btn btn-default">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                     </a>
                                 </td>
                                 <td align="center" class="col-md-1">
-                                    <a href="/books/delete?id=<?php echo $book->getId(); ?>" class="btn btn-default">
+                                    <a href="/books/delete?id=<?= $book->getId(); ?>" class="btn btn-default">
                                         <span class="glyphicon glyphicon-trash"></span>
                                     </a>
                                 </td>

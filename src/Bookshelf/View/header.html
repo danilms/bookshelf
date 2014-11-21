@@ -35,7 +35,7 @@
                     <div class="navbar-collapse collapse navbar-right">
                         <ul class="nav navbar-nav">
                             <?php if ($params['currentUser']):  ?>
-                                <?php echo sprintf('<li><a href="/user">%s</li></a>', $params['currentUser']->getFirstName()) ?>
+                                <?= sprintf('<li><a href="/user">%s</li></a>', $params['currentUser']->getFirstName()) ?>
                                 <li><a href="/login/logout">Выйти</a></li>
                             <?php else: ?>
                                <li><a href="/login/register-form">Регистрация</a></li>
