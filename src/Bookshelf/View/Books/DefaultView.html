@@ -31,7 +31,7 @@
                         <?php foreach ($category as $book): ?>
                             <tr>
                                 <td class="col-md-3"><?php echo $book->getAuthor();?></td>
-                                <td class="col-md-7"><?php echo $book->getName(); ?></td>
+                                <td class="col-md-7"><a href="/books/show?id=<?php echo $book->getId(); ?>"><?php echo $book->getName(); ?></a></td>
                                 <td align="center" class="col-md-1">
                                     <a href="/books/update?id=<?php echo $book->getId(); ?>" class="btn btn-default">
                                         <span class="glyphicon glyphicon-pencil"></span>

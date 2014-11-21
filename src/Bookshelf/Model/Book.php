@@ -5,6 +5,7 @@
 
 namespace Bookshelf\Model;
 
+use Bookshelf\Core\Session;
 use PDO;
 use Bookshelf\Core\Db;
 
@@ -26,7 +27,7 @@ class Book extends ActiveRecord
     private $description;
 
     /**
-     * @var string
+     * @var float
      */
     private $rating;
 
@@ -177,15 +178,15 @@ class Book extends ActiveRecord
     }
 
     /**
-     * @return integer
+     * @return float
      */
     public function getRating()
     {
-        return $this->rating;
+        return number_format($this->rating, 2);
     }
 
     /**
-     * @param integer $rating
+     * @param float $rating
      * @return Book
      */
     public function setRating($rating)
@@ -299,7 +300,6 @@ class Book extends ActiveRecord
             'category_id' => $this->category->getId(),
             'name' => $this->name,
             'description' => $this->description,
-            'rating' => $this->rating,
             'link' => $this->link,
             'author' => $this->author
         ];
