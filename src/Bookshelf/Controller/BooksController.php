@@ -128,7 +128,6 @@ class BooksController extends Controller
         if (!$this->getCurrentUser()) {
             $this->redirectTo('/login');
         } else {
-
             $book = Book::find($this->request->get('id'));
             if (!$book) {
                 $this->addErrorMessage('Книга не найдена!');
@@ -136,17 +135,15 @@ class BooksController extends Controller
             }
 
             $bookId = $book->getId();
-            $userId = $this->getCurrentUser()->getId();
             $isRated = false;
-            if (Rating::findBy(['book_id' => $bookId, 'user_id' => $userId])) {
+            if (Rating::findBy(['book_id' => $bookId, 'user_id' => $this->getCurrentUser()->getId()])) {
                 $isRated = true;
             }
-            $errors = [];
 
             return $this->templater->show($this->controllerName, 'show',
                 [
                     'book' => $book,
-                    'errors' => $errors,
+                    'errors' => [],
                     'is_rated' => $isRated,
                     'currentUser' => $this->getCurrentUser()
                 ]);

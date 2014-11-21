@@ -40,7 +40,9 @@ CREATE FUNCTION update_rating() RETURNS trigger
     AS $$BEGIN
 UPDATE books
 SET rating = (SELECT avg(rating) FROM ratings
-WHERE books.id = ratings.book_id);
+WHERE books.id = ratings.book_id)
+FROM ratings
+WHERE books.id = ratings.book_id;
 return NEW;
 END;
 $$;
