@@ -79,18 +79,26 @@ class Book extends ActiveRecord
      */
     public function getUsers()
     {
+        if (!$this->users) {
+            $sql = "SELECT users.* FROM users_to_books INNER JOIN users ON users_to_books.user_id = users.id WHERE users_to_books.book_id = $this->id";
+            Db::getInstance()->execute($sql);
+            $usersData = Db::getInstance()->getStatement()->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($usersData as $userData) {
+                $user = new User();
+                $user->initStateFromArray($userData);
+                $this->users[] = $user;
+            }
+        }
+
         return $this->users;
     }
 
     /**
-     * @param array $users
-     * @return Book
+     * @param $users
      */
     public function setUsers($users)
     {
         $this->users = $users;
-
-        return $this;
     }
 
     /**
@@ -241,6 +249,13 @@ class Book extends ActiveRecord
         return $books;
     }
 
+    public static function deleteIfOrphane($bookId)
+    {
+        $arrayOfBinds = Db::getInstance()->fetchBy('users_to_books', ['book_id' => $bookId]);
+        if (!$arrayOfBinds) {
+            Book::find($bookId)->delete();
+        }
+    }
     /**
      * @param array $searchParameters
      * @return array

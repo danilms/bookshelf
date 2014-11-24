@@ -14,7 +14,6 @@ use Bookshelf\Core\Validation\Validator;
 use Bookshelf\Model\Book;
 use Bookshelf\Model\Category;
 use Bookshelf\Model\Rating;
-use Bookshelf\Model\User;
 
 /**
  * @author Danil Vasiliev <daniil.vasilev@opensoftdev.ru>
@@ -67,8 +66,8 @@ class BooksController extends Controller
             $errors = $this->fillAndValidate($book);
             if (!$errors) {
                 $book->save();
-                $this->addSuccessMessage('Книга успешно добавлена!');
-
+                $user = $this->getCurrentUser();
+                $user->attachBook($book);
                 $this->redirectTo('/books');
             }
         }
@@ -83,8 +82,7 @@ class BooksController extends Controller
 
     public function updateAction()
     {
-        $book = Book::find($this->request->get('id'));
-
+        $book = Book::find($this->request->get('book_id'));
         if (!$book) {
             $this->addErrorMessage('Редактируемая книга не найдена!');
             $this->redirectTo('/books');

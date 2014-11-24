@@ -1,6 +1,9 @@
 <?php include(__DIR__ . '/../header.html'); ?>
 
 <div class="container">
+
+    <?php include(__DIR__ . '/../FlashMessages.html'); ?>
+
     <form class="form-signin" action="/login/register" method="post">
         <div class="form-group <?= (isset($params['errors']) && !empty($params['errors']['firstname'])) ? 'has-error' : ''; ?>">
             <label class="control-label" for="firstname">Имя</label>

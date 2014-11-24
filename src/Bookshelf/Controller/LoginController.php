@@ -103,7 +103,7 @@ class LoginController extends Controller
             $this->session->set('currentUser', $user);
             $this->redirectTo("/");
         } else {
-            $params['errors']['save_fail'][] = 'На данный момент регистрация не возможна, пожалуйста повторите попытку позднее';
+            $this->addErrorMessage('На данный момент регистрация невозможна, пожалуйста повторите попытку позднее');
             $this->logger->emergency('Cant save user in DataBase');
             return $this->showRegisterForm($params);
         }

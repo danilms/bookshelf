@@ -1,8 +1,10 @@
 <?php
 
 namespace Bookshelf\Model;
+
 use Bookshelf\Core\Db;
 use InvalidArgumentException;
+use PDO;
 
 /**
  * @author Aleksandr Kolobkov
@@ -83,11 +85,11 @@ class User extends ActiveRecord
     /**
      * Method that will fill data about user books from outside
      *
-     * @param array $booksData
+     * @param array $books
      */
-    public function setBooks($booksData)
+    public function setBooks($books)
     {
-        $this->books = $booksData;
+       $this->books = $books;
     }
 
     /**
@@ -122,6 +124,11 @@ class User extends ActiveRecord
         }
     }
 
+    public function deleteBook($bookId)
+    {
+        $this->delete('users_to_books', ['user_id' => $this->getId(), 'book_id' => $bookId]);
+        Book::deleteIfOrphane($bookId);
+    }
     /**
      * @return int
      */
@@ -203,6 +210,15 @@ class User extends ActiveRecord
     }
 
     /**
+     * @param Book $book
+     */
+    public function attachBook($book)
+    {
+        $this->bindBookToUser($book);
+        $this->books[] = $book;
+    }
+
+    /**
      * Return all property for user
      *
      * @return array
@@ -245,7 +261,14 @@ class User extends ActiveRecord
      */
     private function fetchBooks()
     {
-        $this->books = Book::findBy(['owner_id' => $this->getId()]);
+        $sql = "SELECT books.* FROM users_to_books INNER JOIN books ON users_to_books.book_id = books.id WHERE users_to_books.user_id = $this->id";
+        Db::getInstance()->execute($sql);
+        $booksData = Db::getInstance()->getStatement()->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($booksData as $bookData) {
+            $book = new Book;
+            $book->initStateFromArray($bookData);
+            $this->books[] = $book;
+        }
     }
 
     /**
@@ -260,5 +283,13 @@ class User extends ActiveRecord
             $contact->setId($contactData['id']);
             $this->contacts[] = $contact;
         }
+    }
+
+    /**
+     * @param Book $book
+     */
+    private function bindBookToUser($book)
+    {
+        Db::getInstance()->insert('users_to_books', ['user_id' => $this->getId(), 'book_id' => $book->getId()]);
     }
 }

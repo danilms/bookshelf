@@ -25,7 +25,9 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li><a href="/books/add">Добавить книгу</a></li>
+                            <?php if ($params['currentUser']):  ?>
+                                <li><a href="/books/add">Добавить книгу</a></li>
+                            <?php endif; ?>
                             <li><a href="/books">Книги</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->

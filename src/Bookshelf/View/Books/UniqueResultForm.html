@@ -1,0 +1,19 @@
+<?php $book = $params['errors']['unique']?>
+<div class="col-md-11" style="float: right; margin-top: 20px;">
+<legend>В базе была найдена следующая книга</legend>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Автор</th>
+            <th>Название</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?php echo $book->getAuthor() ?></td>
+            <td><?php echo $book->getName() ?></td>
+            <td><a href="/books/show/?book_id=<?php echo $book->getId() ?>" class="btn btn-primary">Подробнее</a></td>
+        </tr>
+    </tbody>
+</table>
+</div>

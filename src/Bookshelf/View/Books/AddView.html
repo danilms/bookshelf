@@ -1,9 +1,14 @@
 <?php include(__DIR__ . '/../header.html'); ?>
 
-<div class="container">
+<div class="container" >
     <legend>Добавление книги</legend>
     <?php $action = 'add';
      include(__DIR__ . '/../Books/AddBookForm.html'); ?>
+
+    <?php if(isset($params['errors']['unique'])):?>
+        <?php include(__DIR__ . '/../Books/UniqueResultForm.html'); ?>
+    <?php endif; ?>
 </div>
+
 
 <?php include(__DIR__ . '/../footer.html'); ?>
