@@ -1,6 +1,7 @@
 <?php
 
 namespace Bookshelf\Model;
+
 use Bookshelf\Core\Db;
 use InvalidArgumentException;
 use PDO;

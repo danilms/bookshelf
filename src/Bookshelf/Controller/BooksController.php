@@ -66,7 +66,7 @@ class BooksController extends Controller
             $errors = $this->fillAndValidate($book);
             if (!$errors) {
                 $book->save();
-                $user = User::findOneBy(['email' => $this->session->get('email')]);
+                $user = $this->getCurrentUser();
                 $user->attachBook($book);
                 $this->redirectTo('/books');
             }
@@ -171,27 +171,6 @@ class BooksController extends Controller
         }
 
         return $this->templater->show($this->controllerName, 'show', ['book' => $book, 'errors' => $errors]);
-    }
-
-    /**
-     *
-     */
-    public function moreInfoAction()
-    {
-        if ($this->session->get('email')) {
-            $user = User::findOneBy(['email' => $this->session->get('email')]);
-            $books = $user->getBooks();
-            foreach ($books as $book) {
-                $bookId = $this->request->get('book_id');
-                if ($bookId == $book->getId()) {
-                    $params['book_owner'] = true;
-                }
-            }
-        }
-        $params['book'] = Book::find($this->request->get('book_id'));
-
-
-        return $this->templater->show($this->controllerName, 'Show', $params);
     }
 
     /**
