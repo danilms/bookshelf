@@ -5,6 +5,7 @@
 
 namespace Bookshelf\Controller;
 
+use Bookshelf\Core\Exception\DbException;
 use Bookshelf\Core\Logger\Logger;
 use Bookshelf\Core\Request;
 use Bookshelf\Core\Session;
@@ -79,5 +80,16 @@ abstract class Controller {
     protected function getCurrentUser()
     {
         return $this->session->get('currentUser');
+    }
+
+    /**
+     * @param DbException $e
+     * @param string $message
+     */
+    protected function logAndDisplayError(DbException $e, $message)
+    {
+        $this->addErrorMessage($message);
+        $this->logger->error($e->getMessage());
+        $this->logger->error($e->getTraceAsString());
     }
 }

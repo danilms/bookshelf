@@ -32,9 +32,7 @@ class ContactsController extends Controller
                             $contact->save();
                             $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                         } catch (DbException $e) {
-                            $this->addErrorMessage('Ошибка добавления контакта!');
-                            $this->logger->error($e->getMessage());
-                            $this->logger->error($e->getTraceAsString());
+                            $this->logAndDisplayError($e, 'Ошибка добавления контакта!');
                         }
                     }
                     $errors = $this->checkDataByContactType($contact);
@@ -89,9 +87,7 @@ class ContactsController extends Controller
                         $contact->save();
                         $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                     } catch (DbException $e) {
-                        $this->addErrorMessage('Ошибка изменения контакта!');
-                        $this->logger->error($e->getMessage());
-                        $this->logger->error($e->getTraceAsString());
+                        $this->logAndDisplayError($e, 'Ошибка изменения контакта!');
                     }
                 }
             }
@@ -115,9 +111,8 @@ class ContactsController extends Controller
                     $contact->delete();
                     $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                 } catch (DbException $e) {
-                    $this->addErrorMessage('Ошибка удаления контакта!');
-                    $this->logger->error($e->getMessage());
-                    $this->logger->error($e->getTraceAsString());
+                    $this->logAndDisplayError($e, 'Ошибка удаления контакта!');
+
                 }
             }
         }

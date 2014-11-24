@@ -70,9 +70,7 @@ class BooksController extends Controller
                     $book->save();
                     $this->addSuccessMessage('Книга успешно добавлена!');
                 } catch (DbException $e) {
-                    $this->addErrorMessage('Ошибка добавления книги!');
-                    $this->logger->error($e->getMessage());
-                    $this->logger->error($e->getTraceAsString());
+                    $this->logAndDisplayError($e, 'Ошибка добавления книги!');
                 }
                 $this->redirectTo('/books');
             }
@@ -102,9 +100,7 @@ class BooksController extends Controller
                         $book->save();
                         $this->addSuccessMessage('Книга успешно отредактирована!');
                     } catch (DbException $e) {
-                        $this->addErrorMessage('Ошибка редактирования книги!');
-                        $this->logger->error($e->getMessage());
-                        $this->logger->error($e->getTraceAsString());
+                        $this->logAndDisplayError($e, 'Ошибка редактирования книги!');
                     }
                     $this->redirectTo('/books');
                 }
@@ -129,9 +125,7 @@ class BooksController extends Controller
                 $book->delete();
                 $this->addSuccessMessage('Книга успешно удалена!');
             } catch (DbException $e) {
-                $this->addErrorMessage('Ошибка удаления книги!');
-                $this->logger->error($e->getMessage());
-                $this->logger->error($e->getTraceAsString());
+                $this->logAndDisplayError($e, 'Ошибка удаления книги!');
             }
         }
 
@@ -143,7 +137,7 @@ class BooksController extends Controller
         if (!$this->getCurrentUser()) {
             $this->redirectTo('/login');
         } else {
-            $book = Book::find($this->request->get('id'));
+            $book = Book::find($this->request->get('book_id'));
             if (!$book) {
                 $this->addErrorMessage('Книга не найдена!');
                 $this->redirectTo('/books');
@@ -187,9 +181,7 @@ class BooksController extends Controller
                 $rating->save();
                 $this->redirectTo('/books/show?id=' . $book->getId());
             } catch (DbException $e) {
-                $this->addErrorMessage('Ошибка добавления рейтинга!');
-                $this->logger->error($e->getMessage());
-                $this->logger->error($e->getTraceAsString());
+                $this->logAndDisplayError($e, 'Ошибка добавления рейтинга!');
             }
         }
 
