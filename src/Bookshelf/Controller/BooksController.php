@@ -137,7 +137,7 @@ class BooksController extends Controller
         if (!$this->getCurrentUser()) {
             $this->redirectTo('/login');
         } else {
-            $book = Book::find($this->request->get('book_id'));
+            $book = Book::find($this->request->get('id'));
             if (!$book) {
                 $this->addErrorMessage('Книга не найдена!');
                 $this->redirectTo('/books');

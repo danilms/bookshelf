@@ -2,6 +2,7 @@
 
 namespace Bookshelf\Controller;
 
+use Bookshelf\Core\Exception\DbException;
 use Bookshelf\Model\Book;
 use Bookshelf\Model\User;
 use Bookshelf\Core\Validation\Constraint\EmailConstraint;
@@ -31,8 +32,13 @@ class UserController extends Controller
     public function deleteBookAction()
     {
         $user = User::findOneBy(['email' => $this->session->get('email')]);
-        $user->delete($this->request->get('book_id'));
-        $this->redirectTo('/user');
+        try {
+            $user->deleteBook($this->request->get('book_id'));
+            $this->addSuccessMessage('Книга успешно удалена!');
+            $this->redirectTo('/user');
+        } catch(DbException $e) {
+            $this->logAndDisplayError($e, 'Ошибка удаления книги!');
+        }
     }
 
     /**
@@ -83,6 +89,7 @@ class UserController extends Controller
         $this->session->set('firstname', $this->request->get('firstname'));
         try {
             $user->save();
+            $this->addSuccessMessage('Данные успешно обновлены!');
             $this->redirectTo("/user");
         } catch(DbException $e) {
             $this->logAndDisplayError($e, 'Произошёл сбой при попытке сменить данные пользователя. Пожалуйста повторите попытку позднее');

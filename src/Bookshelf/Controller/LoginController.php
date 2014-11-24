@@ -102,6 +102,7 @@ class LoginController extends Controller
         try {
             $user->save();
             $this->session->set('currentUser', $user);
+            $this->addSuccessMessage('Вы успешно зарегистрированы!');
             $this->redirectTo("/");
         } catch(DbException $e) {
             $this->logAndDisplayError($e,'На данный момент регистрация невозможна, пожалуйста повторите попытку позднее');

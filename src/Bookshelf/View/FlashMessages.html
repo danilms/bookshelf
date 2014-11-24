@@ -5,8 +5,8 @@
             foreach($params['flashMessages'][$type] as $message):
                 ?>
                 <div class="alert alert-<?= $type; ?>">
-                    <?= $message; ?>
                     <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <?= $message; ?>
                 </div>
             <?php
             endforeach;

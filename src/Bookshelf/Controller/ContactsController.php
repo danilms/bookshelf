@@ -30,6 +30,7 @@ class ContactsController extends Controller
                     if (!$errors) {
                         try {
                             $contact->save();
+                            $this->addSuccessMessage('Контакт успешно добавлен!');
                             $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                         } catch (DbException $e) {
                             $this->logAndDisplayError($e, 'Ошибка добавления контакта!');
@@ -85,6 +86,7 @@ class ContactsController extends Controller
                 if (!$errors) {
                     try {
                         $contact->save();
+                        $this->addSuccessMessage('Информация успешно обновлена!');
                         $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                     } catch (DbException $e) {
                         $this->logAndDisplayError($e, 'Ошибка изменения контакта!');
@@ -109,6 +111,7 @@ class ContactsController extends Controller
             if ($id == $contact->getId()) {
                 try {
                     $contact->delete();
+                    $this->addSuccessMessage('Контакт успешно удалён!');
                     $this->redirectTo("/user/show/?id=" . $contact->getUser()->getId());
                 } catch (DbException $e) {
                     $this->logAndDisplayError($e, 'Ошибка удаления контакта!');
